@@ -50,9 +50,9 @@ app.post('/employees', async (req, res) => {
     const { name, salary } = req.body;
 
     const newEmployee = new Employee({ name, salary });
-    const savedEmployee = await newEmployee.save();
+    await newEmployee.save();
 
-    res.status(201).json(savedEmployee);
+    res.status(201).json({ message: 'Employee added successfully' });
   } catch (error) {
     console.error('Error adding employee:', error);
     res.status(500).json({ error: 'Internal Server Error' });
