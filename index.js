@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -43,19 +45,33 @@ app.get('/employees', async (req, res) => {
   }
 });
 
+app.post('/employees', async (req, res) => {
+  try {
+    const { name, salary } = req.body;
+
+    const newEmployee = new Employee({ name, salary });
+    const savedEmployee = await newEmployee.save();
+
+    res.status(201).json(savedEmployee);
+  } catch (error) {
+    console.error('Error adding employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.put('/employees/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { salary } = req.body;
+    const { name, salary } = req.body;
 
-    await Employee.findByIdAndUpdate(id, { salary });
+    await Employee.findByIdAndUpdate(id, { name, salary });
 
     // Emit socket event to notify clients about the update
     io.emit('updateEmployees');
 
-    res.status(200).json({ message: 'Salary updated successfully' });
+    res.status(200).json({ message: 'Employee updated successfully' });
   } catch (error) {
-    console.error('Error updating salary:', error);
+    console.error('Error updating employee:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
